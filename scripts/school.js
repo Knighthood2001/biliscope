@@ -30,6 +30,8 @@ async function getUpSchoolInfo(uid) {
             const schoolInfo = userData.space.info.school.name;
             if (schoolInfo) {
                 return schoolInfo;
+            } else {
+                return "";
             }
         }
 
