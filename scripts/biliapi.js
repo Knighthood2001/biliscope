@@ -290,7 +290,6 @@ function updateUserInfo(userId, callback) {
 
     updateRelation(userId, callback);
 
-    // ��ȡѧУ��Ϣ
     updateSchoolInfo(userId, callback);
 
     if (biliScopeOptions.enableVideoData) {
@@ -391,25 +390,15 @@ async function getMyInfo() {
 }
 
 async function getUpSchoolInfo(uid) {
-    console.log("=== getUpSchoolInfo ===");
-    console.log("uid:", uid);
-    
     if (!uid) {
-        console.log("uid=null");
         return null;
     }
     
     try {
         const apiUrl = `${BILIBILI_API_URL}/x/space/wbi/acc/info`;
-        
         const data = await biliGet(apiUrl, { mid: uid });
-        console.log("data:", data);
-        
         if (data.code === 0 && data.data && data.data.school) {
-            console.log("school:", data.data.school);
-            // return data.data.school.name || data.data.school;
             if (data.data.school.name != ""){
-                console.log("school:", data.data.school.name);
                 return data.data.school.name;
             }
             else {
