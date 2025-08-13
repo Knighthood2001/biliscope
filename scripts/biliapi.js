@@ -226,7 +226,7 @@ function cacheValid(cache) {
         return false;
     }
 
-    return ["stat", "info", "wordcloud", "count"].every((key) => cache[key]);
+    return ["stat", "info", "wordcloud", "count", "school"].every((key) => cache[key]);
 }
 
 function cacheAndUpdate(callback, userId, api, payload) {
@@ -289,6 +289,9 @@ function updateUserInfo(userId, callback) {
     .then((data) => cacheAndUpdate(callback, userId, "info", data));
 
     updateRelation(userId, callback);
+
+    // ��ȡѧУ��Ϣ
+    updateSchoolInfo(userId, callback);
 
     if (biliScopeOptions.enableVideoData) {
         updateVideoData(userId, callback);
@@ -384,5 +387,43 @@ async function getTagsInfo() {
 async function getMyInfo() {
     return biliGet(`${BILIBILI_API_URL}/x/space/v2/myinfo`, {}).then((data) => {
         return data["data"];
+    });
+}
+
+async function getUpSchoolInfo(uid) {
+    console.log("=== getUpSchoolInfo ��ʼִ�� ===");
+    console.log("�����uid:", uid);
+    
+    if (!uid) {
+        console.log("uidΪ�գ�����null");
+        return null;
+    }
+    
+    try {
+        const apiUrl = `${BILIBILI_API_URL}/x/space/wbi/acc/info`;
+        console.log("����API:", apiUrl);
+        
+        const data = await biliGet(apiUrl, { mid: uid });
+        console.log("API��Ӧ����:", data);
+        
+        if (data.code === 0 && data.data && data.data.school) {
+            console.log("�ҵ�ѧУ��Ϣ:", data.data.school);
+            return data.data.school.name || data.data.school;
+        }
+        
+        console.log("APIδ����ѧУ��Ϣ");
+        return null;
+    } catch (error) {
+        console.error("��ȡѧУ��Ϣʧ��:", error);
+        return null;
+    }
+}
+
+function updateSchoolInfo(userId, callback) {
+    getUpSchoolInfo(userId).then((schoolInfo) => {
+        cacheAndUpdate(callback, userId, "school", { school: schoolInfo });
+    }).catch((error) => {
+        console.error("����ѧУ��Ϣʧ��:", error);
+        cacheAndUpdate(callback, userId, "school", { school: null });
     });
 }

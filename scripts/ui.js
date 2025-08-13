@@ -172,6 +172,9 @@ function getUserProfileCardDataHTML(data) {
                 <div class="idc-meta" style="${data["count"] ? "": "display: none"}">
                     <span class="idc-meta-item"><data-title>平均稿件长度</data-title> ${secondsToDisplay(data["totalVideoLength"] / data["count"])}</span>
                 </div>
+                <div class="idc-meta" style="${data["school"] ? "": "display: none"}">
+                    <span class="idc-meta-item"><data-title>学校</data-title> ${data["school"] || ""}</span>
+                </div>
             </div>
             <div id="biliscope-tag-list">
             </div>
@@ -711,6 +714,8 @@ UserProfileCard.prototype.updateData = function (data) {
     } else if (data["api"] == "totalVideoInfo") {
         this.data["lastMonthVideoCount"] = d["lastMonthCount"];
         this.data["totalVideoLength"] = d["totalLength"];
+    } else if (data["api"] == "school") {
+        this.data["school"] = d["school"];
     }
 
     if (data["api"] == "wordcloud") {
