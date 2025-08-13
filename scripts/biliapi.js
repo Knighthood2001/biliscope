@@ -407,7 +407,14 @@ async function getUpSchoolInfo(uid) {
         
         if (data.code === 0 && data.data && data.data.school) {
             console.log("school:", data.data.school);
-            return data.data.school.name || data.data.school;
+            // return data.data.school.name || data.data.school;
+            if (data.data.school.name != ""){
+                console.log("school:", data.data.school.name);
+                return data.data.school.name;
+            }
+            else {
+                return null;
+            }
         }
         return null;
     } catch (error) {
